@@ -22,7 +22,7 @@ pot = 1
 elix = 0
 GOLD = 0
 x = 0
-y = 0 
+y = 0
 
         # x = 0    x = 1     x = 2     x = 3     x = 4     x = 5       x = 6
 map = [["plains", "plains", "plains", "plains", "forest", "mountain", "cave", "", "", "", ""],     # y = 0
@@ -83,24 +83,34 @@ biom = {
     }
 }   
 
-e_list = ["Goblin", "Orc", "Slime"]
+e_list = ["Goblin", "Orc", "Slime", "Bandit"]
 
 mobs = {
     "Goblin": {
         "hp": 15,
         "atk": 3,
-        "gold": 8,
-        "XP": 13},
+        "gold": 4,
+        "XP": 8},
     "Orc": {
         "hp": 35,
         "atk": 5,
-        "gold": 20,
-        "XP": 25},
+        "gold": 7,
+        "XP": 13},
     "Slime": {
         "hp": 20,
         "atk": 2,
-        "gold": 12,
-        "XP": 3},
+        "gold": 3,
+        "XP": 4},
+    "Bandit": {
+        "hp": 25,
+        "atk": 3,
+        "gold": 14,
+        "XP": 9,},
+    "Dark_Mage": {
+        "hp": 75,
+        "atk": 7,
+        "gold": 5,
+        "XP": 50,},
     "Dragon": {
         "hp": 100,
         "atk": 8,
@@ -180,6 +190,7 @@ def battle():
         if elix > 0:
             fight_menu.append("USE ELIXIR (50HP)")
             #print("3 - USE ELIXIR (MAXHP)")
+        fight_menu.append("RUN")
 
         terminal_fight_menu = TerminalMenu(fight_menu)
         fight_entry_index = terminal_fight_menu.show()
@@ -213,7 +224,16 @@ def battle():
                 input("> ")
             else:
                 print("No elixirs !")
-
+        
+        elif fight_menu[fight_entry_index] == "RUN":
+            if random.randint(0, 1) < 0.5:
+                fight = False
+                play = True
+                clear()
+            else:
+                print("Your can't run !")
+                input("> ")
+                clear()
         else: 
             print("Error")
             continue    
@@ -338,14 +358,11 @@ def cave():
                 battle()
         if cave_menu[cave_entry_index] == "TRUN BACK":
             boss = False
-
+    
 def LVL_UP():   
     global LVL, XPplayer, ATK
 
     if XPplayer > 15:
-        LVL += 1
-    
-    elif XPplayer >= 45:
         LVL += 1
 
 while run:
