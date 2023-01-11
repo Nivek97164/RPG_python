@@ -31,4 +31,10 @@ de l’inventaire. La potion permet de regagner de la vie, et l’Attack Boost e
 durée du combat. On peut revenir en arrière s’il ne veut finalement pas utiliser d’objets mais attaquer.
 On ne peut utiliser qu’une action à chaque tour (attaque ou objet). Puis le monstre attaque et ainsi de suite jusqu’à que l’un des deux
 n’ai plus de vie.
-# RPG_python
+
+## Installation :
+
+`make install`
+## Lancement du programme :
+
+`make run`
