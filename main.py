@@ -6,7 +6,7 @@ run = True
 menu = True
 play = False
 about = False
-key = False
+key_dragon = False
 fight = False
 standing = True
 buy = False
@@ -21,8 +21,8 @@ ATK = 3
 pot = 1
 elix = 0
 GOLD = 0
-x = 0
-y = 0
+x = 2
+y = 3
 
         # x = 0    x = 1     x = 2     x = 3     x = 4     x = 5       x = 6
 map = [["plains", "plains", "plains", "plains", "forest", "mountain", "cave", "", "", "", ""],     # y = 0
@@ -142,7 +142,7 @@ def save():
             "GOLD": GOLD,
             "x": x,
             "y": y,
-            "key": key
+            "key_dragon": key_dragon
         }
     json.dumps(DATA)
 
@@ -232,6 +232,8 @@ def battle():
                 clear()
             else:
                 print("Your can't run !")
+                HPplayer -= atk
+                print(enemy + " dealt " + str(atk) + " damage to " + name + ".")
                 input("> ")
                 clear()
         else: 
@@ -263,10 +265,9 @@ def battle():
                 print("You've found a potion !")
             if enemy == "Dragon":
                 draw()
-                print("Congratulation, you've finished the game !")
+                print("Congratulation, you !")
                 boss = False
-                play = False
-                menu = True
+                play = True
             input("> ")
             clear()
 
@@ -310,7 +311,7 @@ def shop():
             buy = False
 
 def major():
-    global speak, key
+    global speak, key_dragon
 
     while speak:
         clear()
@@ -319,8 +320,8 @@ def major():
         if ATK < 10:
             print("You've not strong enought to face the dragon yet ! Keep practicing and come back later !")
         else : 
-            print("You might want to take on the dragon now ! Take this key but be careful with the beast !")
-            key = True
+            print("You might want to take on the dragon now ! Be careful with the beast !")
+            key_dragon = True
         
         draw()
         major_menu = ["LEAVE"]
@@ -334,7 +335,7 @@ def major():
             speak = False
 
 def cave():
-    global boss, key, fight
+    global boss, key_dragon, fight
 
     while boss:
         clear()
@@ -342,8 +343,8 @@ def cave():
         print("Here lies the cave of the dragon. What will you do ?")
         draw()
         cave_menu = []
-        if key:
-            cave_menu.append("USE KEY")
+        if key_dragon:
+            cave_menu.append("FIGHT THE DRAGON")
             #print("1 - USE KEY")
         cave_menu.append("TRUN BACK")
         #print("2 - TRUN BACK")
@@ -352,8 +353,8 @@ def cave():
         cave_entry_index = terminal_cave_menu.show()
         #choice = input("# ")
 
-        if cave_menu[cave_entry_index] == "USE KEY":
-            if key:
+        if cave_menu[cave_entry_index] == "FIGHT THE DRAGON":
+            if key_dragon:
                 fight = True
                 battle()
         if cave_menu[cave_entry_index] == "TRUN BACK":
@@ -388,8 +389,8 @@ while run:
             pot = 1
             elix = 0
             GOLD = 0
-            x = 0
-            y = 0
+            x = 2
+            y = 3
             menu = False
             play = True
 
@@ -407,7 +408,7 @@ while run:
                     GOLD = data['GOLD']
                     x = data['x']
                     y = data['y']
-                    key = data['key']
+                    key_dragon = data['key_dragon']
 
                     clear()
                     print("Welcome back, " + name + "!")
