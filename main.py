@@ -1,9 +1,11 @@
-import os, random
+# V1.5 ALPHA
+import os, random, json
+from simple_term_menu import *
 
 run = True
 menu = True
 play = False
-rules = False
+about = False
 key = False
 fight = False
 standing = True
@@ -11,8 +13,10 @@ buy = False
 speak = False
 boss = False
 
-HP = 50
-MAXHP = HP
+HPplayer = 50
+MAXHP = HPplayer
+LVL = 0
+XPplayer = 0
 ATK = 3
 pot = 1
 elix = 0
@@ -20,12 +24,13 @@ GOLD = 0
 x = 0
 y = 0 
 
-        # x = 0    x = 1     x = 2     x = 3     x = 4     x = 5       x =6
-map = [["plains", "plains", "plains", "plains", "forest", "mountain", "cave"],     # y = 0
-       ["forest", "forest", "forest", "forest", "forest", "hills", "mountain"],    # y = 1
-       ["forest", "fields", "bridge", "plains", "hills", "forest", "hills"],       # y = 2
-       ["plains", "shop", "town", "major", "plains", "hills", "mountain"],          # y = 4
-       ["plains", "fields", "fields", "plains", "hills", "mountain", "mountain"]]  # y = 5
+        # x = 0    x = 1     x = 2     x = 3     x = 4     x = 5       x = 6
+map = [["plains", "plains", "plains", "plains", "forest", "mountain", "cave", "", "", "", ""],     # y = 0
+       ["forest", "forest", "forest", "forest", "forest", "hills", "mountain", "", "", "", ""],    # y = 1
+       ["forest", "fields", "bridge", "plains", "hills", "forest", "hills", "", "", "", ""],       # y = 2
+       ["plains", "shop", "town", "major", "plains", "hills", "mountain", "", "", "", ""],          # y = 3
+       ["plains", "fields", "fields", "plains", "hills", "mountain", "mountain", "", "", "", ""]]  # y = 4
+
 
 y_len = len(map)-1
 x_len = len(map[0])-1
@@ -33,36 +38,50 @@ x_len = len(map[0])-1
 biom = {
     "plains": {
         "t": "PLAINS",
-        "e": True},
+        "e": True,
+        "s": "🌱"},
     "forest": {
         "t": "WOODS",
-        "e": True},
+        "e": True,
+        "s": "🌳"},
     "fields" : {
         "t": "FIELDS",
-        "e": False},
+        "e": False,
+        "s": "🌽"},
     "bridge": {
         "t": "BRIDGE",
-        "e": True},
+        "e": True,
+        "s": "🌉"},
     "town" : {
         "t" : "TOWN CENTRE",
-        "e" : False},
+        "e" : False,
+        "s": "🏙️"},
     "shop" : {
         "t": "SHOP",
-        "e": False},
+        "e": False,
+        "s": "🛒"},
     "major" : {
         "t": "MAJOR",
-        "e": False},
+        "e": False,
+        "s": "👑"},
     "cave" : {
         "t": "CAVE",
-        "e": True},
+        "e": True,
+        "s": "🕳️"},
     "mountain" : {
         "t": "MOUNTAIN",
-        "e": True},
+        "e": True,
+        "s": "🏔️"},
     "hills" : {
         "t": "HILLS",
-        "e": True
+        "e": True,
+        "s": "⛰️"},
+    "": {
+        "t": "VIDE",
+        "e": False,
+        "s": " "
     }
-}
+}   
 
 e_list = ["Goblin", "Orc", "Slime"]
 
@@ -70,19 +89,23 @@ mobs = {
     "Goblin": {
         "hp": 15,
         "atk": 3,
-        "gold": 8},
+        "gold": 8,
+        "XP": 13},
     "Orc": {
         "hp": 35,
         "atk": 5,
-        "gold": 20},
+        "gold": 20,
+        "XP": 25},
     "Slime": {
         "hp": 20,
         "atk": 2,
-        "gold": 12},
+        "gold": 12,
+        "XP": 3},
     "Dragon": {
         "hp": 100,
         "atk": 8,
-        "gold": 100}
+        "gold": 100,
+        "XP": 100}
 }
 
 current_tile = map[y][x]
@@ -99,34 +122,34 @@ def draw():
     print("xX-------------------------Xx")
 
 def save():
-    list =[
-        name,
-        str(HP),
-        str(ATK),
-        str(pot),
-        str(elix),
-        str(GOLD),
-        str(x),
-        str(y),
-        str(key),
-    ]
+    DATA =  {
+            "name": name,
+            "HPplayer": HPplayer,
+            "XPplayer": XPplayer,
+            "LVL": LVL,
+            "Pot": pot,
+            "elix": elix,
+            "GOLD": GOLD,
+            "x": x,
+            "y": y,
+            "key": key
+        }
+    json.dumps(DATA)
 
-    f = open("Saves/load.txt", "w")
+    f = open("Saves/load.json", "w")
 
-    for item in list:
-        f.write(item + "\n")
-    f.close()
+    f.write(json.dumps(DATA))
 
 def heal(amount):
-    global HP
-    if HP + amount < MAXHP:
-        HP += amount
+    global HPplayer
+    if HPplayer + amount < MAXHP:
+        HPplayer += amount
     else:
-        HP = MAXHP
-    print(name + "'s HP refilled to " + str(HP) + " !")
+        HPplayer = MAXHP
+    print(name + "'s HP refilled to " + str(HPplayer) + " !")
 
 def battle():
-    global fight, play, run, HP, pot, elix, GOLD, boss
+    global fight, play, run, HPplayer, pot, elix, GOLD, boss, XPplayer, menu
 
     if not boss:
         enemy = random.choice(e_list)
@@ -136,6 +159,7 @@ def battle():
     maxhp = hp
     atk = mobs[enemy]["atk"]
     gold = mobs[enemy]["gold"]
+    XP = mobs[enemy]["XP"]
 
     while fight:
         clear()
@@ -143,50 +167,60 @@ def battle():
         print("defeat the "+ enemy + " !")
         draw()
         print(enemy + "'s HP : "+ str(hp) + "/" + str(maxhp))
-        print(name + "'s HP : "+ str(HP) + "/" + str(MAXHP))
+        print(name + "'s HP : "+ str(HPplayer) + "/" + str(MAXHP))
         print("POTIONS: "+ str(pot))
         print("ELIXIR: "+ str(elix))
         draw()
-        print("1 - ATTACK")
+        fight_menu = []
+        #print("1 - ATTACK")
+        fight_menu.append("ATTACK")
         if pot > 0:
-            print("2 - USE POTION (30HP)")
+            fight_menu.append("USE POTION (30HP)")
+            #print("2 - USE POTION (30HP)")
         if elix > 0:
-            print("3 - USE ELIXIR (MAXHP)")
-        draw()
+            fight_menu.append("USE ELIXIR (50HP)")
+            #print("3 - USE ELIXIR (MAXHP)")
 
-        choice = input("# ")
+        terminal_fight_menu = TerminalMenu(fight_menu)
+        fight_entry_index = terminal_fight_menu.show()
+        #choice = input("# ")
 
-        if choice == "1":
+        if fight_menu[fight_entry_index] == "ATTACK":
             hp -= ATK
             print(name + " dealt " + str(ATK) + " damage to the " + enemy + ".")
             if hp > 0:
-                HP -= atk
+                HPplayer -= atk
                 print(enemy + " dealt " + str(atk) + " damage to " + name + ".")
                 input("> ")
                  
-        elif choice == "2":
+        elif fight_menu[fight_entry_index] == "USE POTION (30HP)":
             if pot > 0:
                 pot -= 1
                 heal(30)
-                HP -= atk
+                HPplayer -= atk
                 print(enemy + " dealt " + str(atk) + " damage to " + name + ".")
                 input("> ")
             else:
                 print("No potions !")
-            input("> ")
+            
 
-        elif choice == "3":
+        elif fight_menu[fight_entry_index] == "USE ELIXIR (50HP)":
             if elix > 0:
                 elix -= 1
                 heal(50)
-                HP -= atk
+                HPplayer -= atk
                 print(enemy + " dealt " + str(atk) + " damage to " + name + ".")
                 input("> ")
             else:
                 print("No elixirs !")
-            input("> ")
 
-        if HP <=0:
+        else: 
+            print("Error")
+            continue    
+
+        if HPplayer <=0:
+            clear()
+            draw()
             print(enemy + " defeated " + name + "...")
             draw()
             fight = False
@@ -194,13 +228,16 @@ def battle():
             run = False
             print("GAME OVER")
             input("> ")
+            clear()
         
         if hp <= 0:
             print(name + " defeated the " + enemy + " !")
             draw()
             fight = False
             GOLD += gold
+            XPplayer += XP
             print("You've found " + str(gold) + " gold !")
+            print("You've won " + str(XP) + " XP !")
             if random.randint(0, 100) < 30:
                 pot += 1
                 print("You've found a potion !")
@@ -209,7 +246,7 @@ def battle():
                 print("Congratulation, you've finished the game !")
                 boss = False
                 play = False
-                run = False
+                menu = True
             input("> ")
             clear()
 
@@ -226,15 +263,14 @@ def shop():
         print("ELIXIRS: "+ str(elix))
         print("ATK: "+ str(ATK))
         draw()
-        print("1 - BUY POTION (30HP) - 5 GOLD")
-        print("2 - BUY ELIXIR (MAXHP) - 8 GOLD")
-        print("3 - UPGRADE WEAPON (+2ATK) - 10 GOLD")
-        print("4 - LEAVE")
-        draw()
+        shop_menu = ["BUY POTION (30HP) - 5 GOLD","BUY ELIXIR (50HP) - 8 GOLD","LEAVE"]
 
-        choice = input("# ")
 
-        if choice == "1":
+        terminal_shop_menu = TerminalMenu(shop_menu)
+        shop_entry_index = terminal_shop_menu.show()
+        #choice = input("# ")
+
+        if shop_menu[shop_entry_index] == "BUY POTION (30HP) - 5 GOLD":
             if GOLD >= 5:
                 pot +=1
                 GOLD -= 5
@@ -242,7 +278,7 @@ def shop():
             else:
                 print("Not enought gold !")
             input("> ")
-        if choice == "2":
+        if shop_menu[shop_entry_index] == "BUY ELIXIR (50HP) - 8 GOLD":
             if GOLD >= 8:
                 elix +=1
                 GOLD -= 8
@@ -250,15 +286,7 @@ def shop():
             else:
                 print("Not enought gold !")
             input("> ")
-        if choice == "3":
-            if GOLD >= 10:
-                ATK += 2
-                GOLD -= 10
-                print("You've upgrade your weapon !")
-            else:
-                print("Not enought gold !")
-            input("> ")
-        if choice == "4":
+        if shop_menu[shop_entry_index] == "LEAVE":
             buy = False
 
 def major():
@@ -275,12 +303,14 @@ def major():
             key = True
         
         draw()
-        print("1 - LEAVE")
-        draw()
+        major_menu = ["LEAVE"]
+        #print("1 - LEAVE")
 
-        choice = input("#" )
+        terminal_major_menu = TerminalMenu(major_menu)
+        major_entry_index = terminal_major_menu.show()
+        #choice = input("#" )
 
-        if choice == "1":
+        if major_menu[major_entry_index] == "LEAVE":
             speak = False
 
 def cave():
@@ -291,73 +321,102 @@ def cave():
         draw()
         print("Here lies the cave of the dragon. What will you do ?")
         draw()
+        cave_menu = []
         if key:
-            print("1 - USE KEY")
-        print("2 - TRUN BACK")
-        draw()
+            cave_menu.append("USE KEY")
+            #print("1 - USE KEY")
+        cave_menu.append("TRUN BACK")
+        #print("2 - TRUN BACK")
 
-        choice = input("# ")
+        terminal_cave_menu = TerminalMenu(cave_menu)
+        cave_entry_index = terminal_cave_menu.show()
+        #choice = input("# ")
 
-        if choice == "1":
+        if cave_menu[cave_entry_index] == "USE KEY":
             if key:
                 fight = True
                 battle()
-        if choice == "2":
+        if cave_menu[cave_entry_index] == "TRUN BACK":
             boss = False
+
+def LVL_UP():   
+    global LVL, XPplayer, ATK
+
+    if XPplayer > 15:
+        LVL += 1
+    
+    elif XPplayer >= 45:
+        LVL += 1
 
 while run:
     while menu:
         clear()
         draw()
-        print("1 - NEW GAME")
-        print("2 - LOAD GAME")
-        print("3 - RULES")
-        print("4 - QUIT GAME")
+        print("NAME OF THE GAME")
         draw()
-
-        if rules:
-            print("I'm the creator of this game and these are the rules.")
-            rules = False
-            choice = ""
-            input("> ")
-
-        else:
-            choice = input("# ")
-
-        if choice == "1":
+        main_menu = ["[1] - NEW GAME", "[2] - LOAD GAME","[3] - ABOUT", "[4] - QUIT GAME"]
+        terminal_menu = TerminalMenu(main_menu)
+        menu_entry_index = terminal_menu.show()
+        if main_menu[menu_entry_index] == "[1] - NEW GAME":
             clear()
-            name = input("# What's your name, hero ? ")
+            draw()
+            print("*** Ajouter une histois ***")
+            draw()
+            name = input("# So what is your name ? \n> ")
+            HPplayer = 50
+            MAXHP = HPplayer
+            LVL = 0
+            XPplayer = 0
+            ATK = 3
+            pot = 1
+            elix = 0
+            GOLD = 0
+            x = 0
+            y = 0
             menu = False
             play = True
-        elif choice == "2":
+
+        elif main_menu[menu_entry_index] == "[2] - LOAD GAME":
             try:
-                f = open("Saves/load.txt", "r")
-                load_list = f.readlines()
-                if len(load_list) == 9:
-                    name = load_list[0][:-1]
-                    HP = int(load_list[1][:-1])
-                    ATK = int(load_list[2][:-1])
-                    pot = int(load_list[3][:-1])
-                    elix = int(load_list[4][:-1])
-                    GOLD = int(load_list[5][:-1])
-                    x = int(load_list[6][:-1])
-                    y = int(load_list[7][:-1])
-                    key = bool(load_list[8][:-1])
+                with open("Saves/load.json") as f:
+                    data = json.load(f)
+
+                    name = data['name']
+                    HPplayer = data['HPplayer']
+                    XPplayer = data['XPplayer']
+                    LVL = data['LVL']
+                    Pot = data['Pot']
+                    elix = data['elix']
+                    GOLD = data['GOLD']
+                    x = data['x']
+                    y = data['y']
+                    key = data['key']
+
                     clear()
                     print("Welcome back, " + name + "!")
                     input("> ")
                     menu = False
                     play = True
-                else:
-                    print("Corrupt save file !")
-                    input("> ")
             except OSError:
                 print("No loadable save file !")
                 input("> ")
-        elif choice == "3":
-            rules = True
-        elif choice == "4":
+
+        elif main_menu[menu_entry_index] == "[3] - ABOUT":
+            about = True
+
+        elif main_menu[menu_entry_index] == "[4] - QUIT GAME":
+            clear()
             quit()
+        draw()
+
+        if about:
+            clear()
+            draw()
+            print("I'm the creator of this game !")
+            draw()
+            about = False
+            choice = ""
+            input("> ")
 
     while play:
         save() # autosave
@@ -368,83 +427,107 @@ while run:
                 if random.randint(0, 100) <= 30:
                     fight = True
                     battle()
-
+        
         if play:
             draw()
             print("LOCATION: " + biom[map[y][x]]["t"])
             draw()
             print("NAME: " + name)
-            print("HP: " + str(HP) + "/" + str(MAXHP))
+            print("HP: " + str(HPplayer) + "/" + str(MAXHP))
             print("ATK: " + str(ATK))
+            print("LVL: " + str(LVL))
+            print("XP: "+ str(XPplayer))
             print("POTIONS: " + str(pot))
             print("ELIXIRS: " + str(elix))
             print("GOLD: " + str(GOLD))
             print("COORD: ", x, y)
+            for coor_y in range(0, y_len+1):
+                str_map = ""
+                for coor_x in range(0, x_len+1):
+                    if coor_x == x and coor_y == y:
+                        str_map += " 😃 "
+                    else:
+                        str_map += " " + biom[map[coor_y][coor_x]]["s"] + " "
+                print(str_map)
             draw()
-            print("0 - SAVE AND QUIT")
+
+            action_menu = []
+            #print("0 - SAVE AND QUIT")
             if y > 0:
-                print("1 - NORTH")
+                action_menu.append("NORTH")
+                #print("1 - NORTH")
             if x < x_len:
-                print("2 - EAST")
+                action_menu.append("EAST")
+                #print("2 - EAST")
             if y < y_len:
-                print("3 - SOUTH")
+                action_menu.append("SOUTH")
+                #print("3 - SOUTH")
             if x > 0:
-                print("4 - WEST")
+                action_menu.append("WEST")
+                #print("4 - WEST")
             if pot > 0:
-                print("5 - USE POTION (30HP)")
+                action_menu.append("USE POTION (30HP)")
+                #print("5 - USE POTION (30HP)")
             if elix > 0:
-                print("6 - USE ELIXIR (50HP)")
+                action_menu.append("USE ELIXIR (50HP)")
+                #print("6 - USE ELIXIR (50HP)")
             if map[y][x] == "shop" or map[y][x] == "major" or map[y][x] == "cave":
-                print("7 - ENTER")
-            draw()
+                action_menu.append("ENTER")
+               #print("7 - ENTER")
+            action_menu.append("SAVE AND QUIT")
 
-            dest = input("# ")
 
-            if dest == "0":
+
+            terminal_action_menu = TerminalMenu(action_menu)
+            action_entry_index = terminal_action_menu.show()
+            #if main_menu[menu_entry_index] == "[1] - NEW GAME":
+        
+            #dest = input("# ")
+
+            if action_menu[action_entry_index] == "SAVE AND QUIT":
                 play = False
                 menu = True
                 save()
 
-            elif dest == "1":
+            elif action_menu[action_entry_index] == "NORTH":
                 if y > 0:
                     y -= 1
                     standing = False
 
-            elif dest == "2":
+            elif action_menu[action_entry_index] == "EAST":
                 if x < x_len:
                     x += 1
                     standing = False
 
-            elif dest == "3":
+            elif action_menu[action_entry_index] == "SOUTH":
                 if y < y_len:
                     y += 1
                     standing = False
             
-            elif dest == "4":
+            elif action_menu[action_entry_index] == "WEST":
                 if x > 0:
                     x -= 1
                     standing = False
             
-            elif dest == "5":
+            elif action_menu[action_entry_index] == "USE POTION (30HP)":
                 if pot > 0:
                     pot -= 1
                     heal(30)
                     input("> ")
                 else:
                     print("No potions !")
-                input("> ")
                 standing = True
 
-            elif dest == "6":
+            elif action_menu[action_entry_index] == "USE ELIXIR (50HP)":
                 if elix > 0:
                     elix -= 1
                     heal(50)
                     input("> ")
                 else:
                     print("No elixirs !")
-                input("> ")
                 standing = True
-            elif dest == "7":
+
+            elif action_menu[action_entry_index] == "ENTER":
                 if map[y][x] == "shop":
                     buy = True
                     shop()
