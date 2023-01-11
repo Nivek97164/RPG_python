@@ -119,11 +119,11 @@ mobs = {
 }
 
 current_tile = map[y][x]
-print(current_tile)
+#print(current_tile)
 name_of_tile = biom[current_tile]["t"]
-print(name_of_tile)
+#print(name_of_tile)
 enemy_tile = biom[current_tile]["e"]
-print(enemy_tile)
+#print(enemy_tile)
 
 def clear():
     os.system("clear")
