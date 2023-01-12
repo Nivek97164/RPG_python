@@ -17,9 +17,9 @@ HPplayer = 50
 MAXHP = HPplayer
 LVL = 0
 XPplayer = 0
-LVL_next = [25, 50, 75]
+LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984]
 ATK = 3
-pot = 100
+pot = 1
 elix = 0    
 GOLD = 0
 x = 2
@@ -139,7 +139,8 @@ def save():
             "XPplayer": XPplayer,
             "LVL": LVL,
             "LVL_next": LVL_next,
-            "Pot": pot,
+            "ATK": ATK,
+            "pot": pot,
             "elix": elix,
             "GOLD": GOLD,
             "x": x,
@@ -381,9 +382,9 @@ while run:
             MAXHP = HPplayer
             LVL = 0
             XPplayer = 0
-            LVL_next = [25, 50, 75]
+            LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984]
             ATK = 3
-            pot = 100
+            pot = 1
             elix = 0    
             GOLD = 0
             x = 2
@@ -398,9 +399,12 @@ while run:
 
                     name = data['name']
                     HPplayer = data['HPplayer']
+                    MAXHP = data['MAXHP']
                     XPplayer = data['XPplayer']
+                    LVL_next = data['LVL_next']
+                    ATK = data['ATK']
                     LVL = data['LVL']
-                    Pot = data['Pot']
+                    pot = data['pot']
                     elix = data['elix']
                     GOLD = data['GOLD']
                     x = data['x']
@@ -434,7 +438,6 @@ while run:
             input("> ")
 
     while play:
-        save() # autosave
         clear()
 
         if not standing:
@@ -458,6 +461,21 @@ while run:
                 ATK = ATK + 2
                 MAXHP = MAXHP + 3
             elif LVL == 5:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+            elif LVL == 6:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+            elif LVL == 7:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+            elif LVL == 8:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+            elif LVL == 9:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+            elif LVL == 10:
                 ATK = ATK + 3
                 MAXHP = MAXHP + 2
 
