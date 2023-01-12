@@ -17,9 +17,10 @@ HPplayer = 50
 MAXHP = HPplayer
 LVL = 0
 XPplayer = 0
+LVL_next = [25, 50, 75]
 ATK = 3
-pot = 1
-elix = 0
+pot = 100
+elix = 0    
 GOLD = 0
 x = 2
 y = 3
@@ -30,7 +31,6 @@ map = [["plains", "plains", "plains", "plains", "forest", "mountain", "cave", ""
        ["forest", "fields", "bridge", "plains", "hills", "forest", "hills", "", "", "", ""],       # y = 2
        ["plains", "shop", "town", "major", "plains", "hills", "mountain", "", "", "", ""],          # y = 3
        ["plains", "fields", "fields", "plains", "hills", "mountain", "mountain", "", "", "", ""]]  # y = 4
-
 
 y_len = len(map)-1
 x_len = len(map[0])-1
@@ -107,10 +107,10 @@ mobs = {
         "gold": 14,
         "XP": 9,},
     "Dark_Mage": {
-        "hp": 75,
-        "atk": 7,
-        "gold": 5,
-        "XP": 50,},
+        "hp": 150,
+        "atk": 9,
+        "gold": 0,
+        "XP": 0,},
     "Dragon": {
         "hp": 100,
         "atk": 8,
@@ -135,8 +135,10 @@ def save():
     DATA =  {
             "name": name,
             "HPplayer": HPplayer,
+            "MAXHP": MAXHP,
             "XPplayer": XPplayer,
             "LVL": LVL,
+            "LVL_next": LVL_next,
             "Pot": pot,
             "elix": elix,
             "GOLD": GOLD,
@@ -359,12 +361,6 @@ def cave():
                 battle()
         if cave_menu[cave_entry_index] == "TRUN BACK":
             boss = False
-    
-def LVL_UP():   
-    global LVL, XPplayer, ATK
-
-    if XPplayer > 15:
-        LVL += 1
 
 while run:
     while menu:
@@ -385,9 +381,10 @@ while run:
             MAXHP = HPplayer
             LVL = 0
             XPplayer = 0
+            LVL_next = [25, 50, 75]
             ATK = 3
-            pot = 1
-            elix = 0
+            pot = 100
+            elix = 0    
             GOLD = 0
             x = 2
             y = 3
@@ -445,7 +442,25 @@ while run:
                 if random.randint(0, 100) <= 30:
                     fight = True
                     battle()
-        
+
+        if XPplayer - LVL_next[LVL] >= 0:
+            XPplayer = XPplayer - LVL_next[LVL]
+            LVL += 1
+            if LVL == 1:
+                ATK = ATK + 2
+            elif LVL == 2:
+                ATK = ATK + 1
+                MAXHP = MAXHP + 6
+            elif LVL == 3:
+                ATK = ATK + 4
+                MAXHP = MAXHP + 4
+            elif LVL == 4:
+                ATK = ATK + 2
+                MAXHP = MAXHP + 3
+            elif LVL == 5:
+                ATK = ATK + 3
+                MAXHP = MAXHP + 2
+
         if play:
             draw()
             print("LOCATION: " + biom[map[y][x]]["t"])
@@ -455,6 +470,7 @@ while run:
             print("ATK: " + str(ATK))
             print("LVL: " + str(LVL))
             print("XP: "+ str(XPplayer))
+            print("NEXT LVL: " + str(LVL_next[LVL]))
             print("POTIONS: " + str(pot))
             print("ELIXIRS: " + str(elix))
             print("GOLD: " + str(GOLD))
