@@ -4,6 +4,7 @@ from simple_term_menu import *
 
 run = True
 menu = True
+Save_Menu = False
 play = False
 about = False
 key_dragon = False
@@ -66,7 +67,7 @@ biom = {
         "s": "👑"},
     "cave" : {
         "t": "CAVE",
-        "e": True,
+        "e": False,
         "s": "🕳️"},
     "mountain" : {
         "t": "MOUNTAIN",
@@ -181,6 +182,7 @@ def battle():
         draw()
         print(enemy + "'s HP : "+ str(hp) + "/" + str(maxhp))
         print(name + "'s HP : "+ str(HPplayer) + "/" + str(MAXHP))
+        print("LVL :"+ str(LVL))
         print("POTIONS: "+ str(pot))
         print("ELIXIR: "+ str(elix))
         draw()
@@ -249,8 +251,9 @@ def battle():
             print(enemy + " defeated " + name + "...")
             draw()
             fight = False
+            boss = False
             play = False
-            run = False
+            menu = True
             print("GAME OVER")
             input("> ")
             clear()
@@ -275,7 +278,7 @@ def battle():
             clear()
 
 def shop():
-    global buy, GOLD, pot, elix, ATK
+    global buy, GOLD, pot, elix
 
     while buy:
         clear()
@@ -285,7 +288,6 @@ def shop():
         print("GOLD: "+ str(GOLD))
         print("POTIONS: "+ str(pot))
         print("ELIXIRS: "+ str(elix))
-        print("ATK: "+ str(ATK))
         draw()
         shop_menu = ["BUY POTION (30HP) - 5 GOLD","BUY ELIXIR (50HP) - 8 GOLD","LEAVE"]
 
@@ -526,7 +528,7 @@ while run:
             if map[y][x] == "shop" or map[y][x] == "major" or map[y][x] == "cave":
                 action_menu.append("ENTER")
                #print("7 - ENTER")
-            action_menu.append("SAVE AND QUIT")
+            action_menu.append("SAVE")
 
 
 
@@ -536,10 +538,9 @@ while run:
         
             #dest = input("# ")
 
-            if action_menu[action_entry_index] == "SAVE AND QUIT":
+            if action_menu[action_entry_index] == "SAVE":
                 play = False
-                menu = True
-                save()
+                Save_Menu = True
 
             elif action_menu[action_entry_index] == "NORTH":
                 if y > 0:
@@ -591,3 +592,43 @@ while run:
                     cave()
             else:
                 standing = True
+
+    while Save_Menu:
+        clear()
+        draw()
+        print("LOCATION: " + biom[map[y][x]]["t"])
+        draw()
+        print("NAME: " + name)
+        print("HP: " + str(HPplayer) + "/" + str(MAXHP))
+        print("ATK: " + str(ATK))
+        print("LVL: " + str(LVL))
+        print("XP: "+ str(XPplayer))
+        print("NEXT LVL: " + str(LVL_next[LVL]))
+        print("POTIONS: " + str(pot))
+        print("ELIXIRS: " + str(elix))
+        print("GOLD: " + str(GOLD))
+        print("COORD: ", x, y)
+        for coor_y in range(0, y_len+1):
+                str_map = ""
+                for coor_x in range(0, x_len+1):
+                    if coor_x == x and coor_y == y:
+                        str_map += " 😃 "
+                    else:
+                        str_map += " " + biom[map[coor_y][coor_x]]["s"] + " "
+                print(str_map)
+        draw()
+
+        Save_Menu = ["SAVE AND CONTINUE", "SAVE AND QUITE"]
+
+        terminal_Save_menu = TerminalMenu(Save_Menu)
+        Save_entry_index = terminal_Save_menu.show()
+
+        if Save_Menu[Save_entry_index] == "SAVE AND CONTINUE":
+            save()
+            play = True
+            Save_Menu = False
+
+        elif Save_Menu[Save_entry_index] == "SAVE AND QUITE":
+            save()
+            Save_Menu = False
+            menu = True
