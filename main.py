@@ -1,4 +1,4 @@
-# V1.5 ALPHA
+# V2 ALPHA
 import os, random, json
 from simple_term_menu import *
 
