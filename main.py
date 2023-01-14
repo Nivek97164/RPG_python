@@ -5,6 +5,7 @@ from simple_term_menu import *
 run = True
 menu = True
 Save_Menu = False
+Stock_menu = False
 play = False
 about = False
 key_dragon = False
@@ -20,7 +21,7 @@ HPplayer = 50
 MAXHP = HPplayer
 LVL = 0
 XPplayer = 0
-LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984]
+LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984, 9999]
 ATK = 3
 pot = 1
 elix = 0    
@@ -169,7 +170,7 @@ def heal(amount):
         HPplayer += amount
     else:
         HPplayer = MAXHP
-    print(name + "HP rechargé à " + str(HPplayer) + " !")
+    print(name + "HP rechargé à " + str(HPplayer) + " HP !")
 
 def battle():
     global fight, play, run, HPplayer, pot, elix, GOLD, boss, boss2, XPplayer, menu, key_mage
@@ -194,7 +195,7 @@ def battle():
         draw()
         print(enemy + "'s HP : "+ str(hp) + "/" + str(maxhp))
         print(name + "'s HP : "+ str(HPplayer) + "/" + str(MAXHP))
-        print("LVL :"+ str(LVL))
+        print("LVL: "+ str(LVL))
         print("POTIONS: "+ str(pot))
         print("ELIXIR: "+ str(elix))
         draw()
@@ -275,12 +276,16 @@ def battle():
             draw()
             fight = False
             GOLD += gold
-            XPplayer += XP
+            if LVL < 10:
+                XPplayer += XP
+                print("Vous avez gagné " + str(XP) + " XP !")
             print("Vous avez trouvé " + str(gold) + " or !")
-            print("Vous avez gagné " + str(XP) + " XP !")
-            if random.randint(0, 100) < 30:
+            if random.randint(0, 100) < 20:
                 pot += 1
                 print("Vous avez trouvé une potion !")
+            if random.randint(0, 100) < 5:
+                elix += 1
+                print("Vous avez trouvé un elixir !")
 
             if enemy == "Alduin":
                 draw()
@@ -433,7 +438,7 @@ while run:
             MAXHP = HPplayer
             LVL = 0
             XPplayer = 0
-            LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984]
+            LVL_next = [25, 38, 57, 86, 129, 194, 291, 437, 656, 984, 9999]
             ATK = 3
             pot = 1
             elix = 0    
@@ -442,6 +447,7 @@ while run:
             y = 3
             menu = False
             play = True
+            
 
         elif main_menu[menu_entry_index] == "[2] - LOAD GAME":
             try:
@@ -539,11 +545,9 @@ while run:
             print("HP: " + str(HPplayer) + "/" + str(MAXHP))
             print("ATK: " + str(ATK))
             print("LVL: " + str(LVL))
-            print("XP: "+ str(XPplayer))
-            print("NEXT LVL: " + str(LVL_next[LVL]))
-            print("POTIONS: " + str(pot))
-            print("ELIXIRS: " + str(elix))
-            print("GOLD: " + str(GOLD))
+            if LVL < 10:
+                print("XP: "+ str(XPplayer))
+                print("NEXT LVL: " + str(LVL_next[LVL]))
             print("COORD: ", x, y)
             draw2()
             for coor_y in range(0, y_len+1):
@@ -557,37 +561,30 @@ while run:
             draw2()
 
             action_menu = []
-            #print("0 - SAVE AND QUIT")
+
             if y > 0:
                 action_menu.append("NORTH")
-                #print("1 - NORTH")
+
             if x < x_len:
                 action_menu.append("EAST")
-                #print("2 - EAST")
+
             if y < y_len:
                 action_menu.append("SOUTH")
-                #print("3 - SOUTH")
+
             if x > 0:
                 action_menu.append("WEST")
-                #print("4 - WEST")
-            if pot > 0:
-                action_menu.append("USE POTION (30HP)")
-                #print("5 - USE POTION (30HP)")
-            if elix > 0:
-                action_menu.append("USE ELIXIR (50HP)")
-                #print("6 - USE ELIXIR (50HP)")
+
+            action_menu.append("INVENTORY")
+
             if map[y][x] == "shop" or map[y][x] == "mayor" or map[y][x] == "cave" or map[y][x] == "tower":
                 action_menu.append("ENTER")
-               #print("7 - ENTER")
+
             action_menu.append("SAVE")
 
 
 
             terminal_action_menu = TerminalMenu(action_menu)
             action_entry_index = terminal_action_menu.show()
-            #if main_menu[menu_entry_index] == "[1] - NEW GAME":
-        
-            #dest = input("# ")
 
             if action_menu[action_entry_index] == "SAVE":
                 play = False
@@ -613,23 +610,11 @@ while run:
                     x -= 1
                     standing = False
             
-            elif action_menu[action_entry_index] == "USE POTION (30HP)":
-                if pot > 0:
-                    pot -= 1
-                    heal(30)
-                    input("> ")
-                else:
-                    print("No potions !")
-                standing = True
-
-            elif action_menu[action_entry_index] == "USE ELIXIR (50HP)":
-                if elix > 0:
-                    elix -= 1
-                    heal(50)
-                    input("> ")
-                else:
-                    print("No elixirs !")
-                standing = True
+            elif action_menu[action_entry_index] == "INVENTORY":
+                play = False
+                Stock_menu = True
+            
+            
 
             elif action_menu[action_entry_index] == "ENTER":
                 if map[y][x] == "shop":
@@ -656,12 +641,16 @@ while run:
         print("HP: " + str(HPplayer) + "/" + str(MAXHP))
         print("ATK: " + str(ATK))
         print("LVL: " + str(LVL))
-        print("XP: "+ str(XPplayer))
-        print("NEXT LVL: " + str(LVL_next[LVL]))
-        print("POTIONS: " + str(pot))
-        print("ELIXIRS: " + str(elix))
+        if LVL < 10:
+            print("XP: "+ str(XPplayer))
+            print("NEXT LVL: " + str(LVL_next[LVL]))
         print("GOLD: " + str(GOLD))
         print("COORD: ", x, y)
+        draw()
+        print("Dans l'inventaire : ")
+        print("POTIONS: " + str(pot))
+        print("ELIXIRS: " + str(elix))
+        draw2()
         for coor_y in range(0, y_len+1):
                 str_map = ""
                 for coor_x in range(0, x_len+1):
@@ -670,7 +659,7 @@ while run:
                     else:
                         str_map += " " + biom[map[coor_y][coor_x]]["s"] + " "
                 print(str_map)
-        draw()
+        draw2()
 
         Save_Menu = ["SAVE AND CONTINUE", "SAVE AND QUIT"]
 
@@ -690,3 +679,50 @@ while run:
             save()
             Save_Menu = False
             menu = True
+
+    while Stock_menu:
+        clear()
+        draw()
+        print("INVENTAIRE : " + name)
+        draw()
+        print("HP: " + str(HPplayer) + "/" + str(MAXHP))
+        print("GOLD: " + str(GOLD))
+        print("POTIONS: " + str(pot))
+        print("ELIXIRS: " + str(elix))
+        draw()
+        
+
+        Stock_menu = []
+
+        if pot > 0:
+            Stock_menu.append("USE POTION (30HP)")
+
+        if elix > 0:
+            Stock_menu.append("USE ELIXIR (50HP)")
+
+        Stock_menu.append("QUIT INVENTORY")
+
+        terminal_Stock_menu = TerminalMenu(Stock_menu)
+        Stock_entry_index = terminal_Stock_menu.show()
+
+        if Stock_menu[Stock_entry_index] == "QUIT INVENTORY":
+            play = True
+            Stock_menu = False
+
+        elif Stock_menu[Stock_entry_index] == "USE POTION (30HP)":
+            if pot > 0:
+                pot -= 1
+                heal(30)
+                input("> ")
+            else:
+                print("No potions !")
+            standing = True
+
+        elif Stock_menu[Stock_entry_index] == "USE ELIXIR (50HP)":
+            if elix > 0:
+                elix -= 1
+                heal(50)
+                input("> ")
+            else:
+                print("No elixirs !")
+            standing = True
