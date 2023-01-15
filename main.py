@@ -141,6 +141,9 @@ def draw():
 def draw2():
     print("xX-------------------------------------Xx")
 
+def draw3():
+    print("xX------------------------------------------------------------------Xx")
+
 def save():
     DATA =  {
             "name": name,
@@ -191,7 +194,7 @@ def battle():
     while fight:
         clear()
         draw()
-        print("defeat the "+ enemy + " !")
+        print("Vaincre "+ enemy + " !")
         draw()
         print(enemy + "'s HP : "+ str(hp) + "/" + str(maxhp))
         print(name + "'s HP : "+ str(HPplayer) + "/" + str(MAXHP))
@@ -289,7 +292,7 @@ def battle():
 
             if enemy == "Alduin":
                 draw()
-                print("***TEXT***")
+                print("Vous...vous avez réussi ! *parle dans sa barbe*...il pourrait faire l'affaire....* \nVous regarde avec un air sérieux ce qui est bizarre pour une personne ivre* Bien ! \nJ'ai une dernière chose à vous demandez. *Vous le regarder intriguer* La vrai source est un magicien noir nommer Magusar, \ndepuis longtemps il fait des sacrifices humain pour rajeunir. Mettez fin à ses folies et je vous donnerais tout mon vin !\n*Vous acceptez la quête mais pas le vin pour des raisons évidante...* Il est situer au sud-est dans une grande tour.")
                 boss = False
                 key_mage = True
                 play = True
@@ -298,7 +301,7 @@ def battle():
 
             if enemy == "Magusar":
                 draw()
-                print("***CREDIT/TEXT***")
+                print("Mais qui êtes vous ? Co..Comment avez vous fait ? \nJe vous suis éternellment reconnaissant...*titube de droite à gauche* Vous êtes le plus grand de tout les hérooooooooos..... \n*Tombe au sol ivre mort, vous soupirez et parter de la tour à la conquête d'une nouvelle aventure*")
                 boss2 = False
                 play = False
                 menu = True
@@ -311,8 +314,10 @@ def shop():
     while buy:
         clear()
         draw()
-        print("***TEXT***")
+        print("         MARCHAND : ")
         draw()
+        print("-J'ai des choses rare à vendre étranger. \n-Vous voulez regardé ? J'ai des tas de choses à offrir .")
+        draw3()
         print("GOLD: "+ str(GOLD))
         print("POTIONS: "+ str(pot))
         print("ELIXIRS: "+ str(elix))
@@ -349,14 +354,16 @@ def mayor():
     while speak:
         clear()
         draw()
-        print("***TEXT, " + name + " ***")
+        print("         MAIRE :")
+        draw()
         if LVL < 3:
-            print("***TEXT***")
+            print("Malheureusement "+ name +", vous m'avez l'air un peu faiblard....")
+            print("Revenez avec plus de puissance pour rivaliser avec lui.")
         else : 
-            print("***TEXT**")
+            print("Vous avez gagné en muscle non ? \n*Vous regarde avec un air douteux* On dirait moi dans ma jeunesse haha ! \nJe pense que vous avez la puissance pour le détruire. Voici la clé ouvrant la grotte. \n*Il vous tend une clé en forme de losange qui malgré son joyaux aux couleur du soleil, \ndégage une odeur d'alcool vous prend au nez. \nVous rangez donc rapidement la clé avant de vous mettre à vomir.*")
             key_dragon = True
         
-        draw()
+        draw3()
         mayor_menu = ["LEAVE"]
         #print("1 - LEAVE")
 
@@ -373,7 +380,7 @@ def cave():
     while boss:
         clear()
         draw()
-        print("***TEXT**")
+        print("BOSS INTERMEDIRAIRE :")
         draw()
         cave_menu = []
         if key_dragon:
@@ -399,7 +406,7 @@ def tower():
     while boss2:
         clear()
         draw()
-        print("***TEXT**")
+        print("BOSS FINAL :")
         draw()
         tower_menu = []
         if key_mage:
@@ -423,7 +430,7 @@ while run:
     while menu:
         clear()
         draw()
-        print("***NAME OF THE GAME***")
+        print("     THE DRUNK QUEST")
         draw()
         main_menu = ["[1] - NEW GAME", "[2] - LOAD GAME","[3] - ABOUT", "[4] - QUIT GAME"]
         terminal_menu = TerminalMenu(main_menu)
@@ -431,9 +438,11 @@ while run:
         if main_menu[menu_entry_index] == "[1] - NEW GAME":
             clear()
             draw()
-            print("***TEXT***")
+            print("         HISTOIRE :")
             draw()
-            name = input("# ***TEXT*** \n> ")
+            print("Vous êtes un pelerin cherchant l'aventure et le danger. \nPendant vôtre voyage vous entendez parlé d'une ville du nom d'Unlucky \ndemandant de l'aide à qui quonque voulant gloire et argent. \nVous vous dirigez donc vers la ville quelque peut étrange avec un maire \ntrès légèrment alcoliser. \nLes habitants vous regarde très peu comme si vous n'existiez pas. \nUne fois que vous avez parlez au maire il vous demande d'une voix quelque \npeu tremblante et sentent le vin de basse qualité :")
+            draw3()
+            name = input("# Alors ? Qu'elle est votre nom héros ? *inch* \n> ")
             HPplayer = 50
             MAXHP = HPplayer
             LVL = 0
@@ -470,7 +479,7 @@ while run:
                     key_mage = data['key_mage']
 
                     clear()
-                    print("***TEXT, " + name + "***")
+                    print("Bon retour, " + name + " !")
                     input("> ")
                     menu = False
                     play = True
@@ -489,7 +498,7 @@ while run:
         if about:
             clear()
             draw()
-            print("**TEXT***")
+            print("Ce jeu est un RPG en tour par tour, \nen mode textuel, programmé par : \nKevin \nAlexendre \nRubbens")
             draw()
             about = False
             choice = ""
@@ -504,7 +513,7 @@ while run:
                     fight = True
                     battle()
 
-        if XPplayer - LVL_next[LVL] >= 0:
+        if LVL < len(LVL_next) and XPplayer - LVL_next[LVL] >= 0:
             XPplayer = XPplayer - LVL_next[LVL]
             LVL += 1
             if LVL == 1:
@@ -516,26 +525,26 @@ while run:
                 ATK = ATK + 4
                 MAXHP = MAXHP + 4
             elif LVL == 4:
-                ATK = ATK + 2
-                MAXHP = MAXHP + 3
+                ATK = ATK + 6
+                MAXHP = MAXHP + 1
             elif LVL == 5:
-                ATK = ATK + 3
-                MAXHP = MAXHP + 2
+                ATK = ATK + 1
+                MAXHP = MAXHP + 1
             elif LVL == 6:
-                ATK = ATK + 3
-                MAXHP = MAXHP + 2
+                ATK = ATK + 1
+                MAXHP = MAXHP + 7
             elif LVL == 7:
                 ATK = ATK + 3
-                MAXHP = MAXHP + 2
+                MAXHP = MAXHP + 10
             elif LVL == 8:
-                ATK = ATK + 3
-                MAXHP = MAXHP + 2
+                ATK = ATK + 1
+                MAXHP = MAXHP + 1
             elif LVL == 9:
-                ATK = ATK + 3
+                ATK = ATK + 1
                 MAXHP = MAXHP + 2
             elif LVL == 10:
-                ATK = ATK + 3
-                MAXHP = MAXHP + 2
+                ATK = ATK + 5
+                MAXHP = MAXHP + 3
 
         if play:
             draw()
