@@ -440,7 +440,7 @@ while run:
             draw()
             print("         HISTOIRE :")
             draw()
-            print("Vous êtes un pelerin cherchant l'aventure et le danger. \nPendant vôtre voyage vous entendez parlé d'une ville du nom d'Unlucky \ndemandant de l'aide à qui quonque voulant gloire et argent. \nVous vous dirigez donc vers la ville quelque peut étrange avec un maire \ntrès légèrment alcoliser. \nLes habitants vous regarde très peu comme si vous n'existiez pas. \nUne fois que vous avez parlez au maire il vous demande d'une voix quelque \npeu tremblante et sentent le vin de basse qualité :")
+            print("Vous êtes un pelerin cherchant l'aventure et le danger. \nPendant vôtre voyage vous entendez parlé d'une ville du nom d'Unlucky \ndemandant de l'aide à quiconque voulant gloire et argent. \nVous vous dirigez donc vers la ville quelque peut étrange avec un maire \ntrès légèrment alcoliser. \nLes habitants vous regarde très peu comme si vous n'existiez pas. \nUne fois que vous avez parlez au maire il vous demande d'une voix quelque \npeu tremblante et sentent le vin de basse qualité :")
             draw3()
             name = input("# Alors ? Qu'elle est votre nom héros ? *inch* \n> ")
             HPplayer = 50

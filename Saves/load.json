@@ -1,1 +1,1 @@
-{"name": "NIvek", "HPplayer": 34, "MAXHP": 63, "XPplayer": 63, "LVL": 4, "LVL_next": [25, 38, 57, 86, 129, 194, 291, 437, 656, 984], "ATK": 12, "pot": 4, "elix": 0, "GOLD": 204, "x": 6, "y": 0, "key_dragon": true}
+{"name": "Nivek", "HPplayer": 8, "MAXHP": 50, "XPplayer": 5, "LVL": 1, "LVL_next": [25, 38, 57, 86, 129, 194, 291, 437, 656, 984, 9999], "ATK": 5, "pot": 0, "elix": 1, "GOLD": 35, "x": 5, "y": 0, "key_dragon": false, "key_mage": false}
